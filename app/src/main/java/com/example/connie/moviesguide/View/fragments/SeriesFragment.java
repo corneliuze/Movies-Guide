@@ -4,6 +4,7 @@ package com.example.connie.moviesguide.View.fragments;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.connie.moviesguide.R;
+import com.example.connie.moviesguide.View.Activities.DetailSeries;
 import com.example.connie.moviesguide.View.Adapters.MovieAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.model.data.MovieRepository;
@@ -32,7 +34,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SeriesFragment extends Fragment {
+public class SeriesFragment extends Fragment implements MovieAdapter.OnClickListener {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
     private ApiData seriesApiData;
@@ -44,6 +46,7 @@ public class SeriesFragment extends Fragment {
     private Movie movie;
     private MovieRepository movieRepository;
     private MovieViewModel movieViewModel;
+    MovieAdapter.OnClickListener onClickListener;
 
     public SeriesFragment() {
         // Required empty public constructor
@@ -57,7 +60,7 @@ public class SeriesFragment extends Fragment {
         recyclerView = view.findViewById(R.id.movie_detail_recyclerview);
         layoutManager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(layoutManager);
-        movieAdapter = new MovieAdapter(context, (List<Movie>) movie);
+        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
         recyclerView.setAdapter(movieAdapter);
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
         seriesApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo);
@@ -114,9 +117,15 @@ public class SeriesFragment extends Fragment {
         });
     }
     public void setView(){
-        movieAdapter = new MovieAdapter(context, (List<Movie>) movie);
+        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
         recyclerView.setAdapter(movieAdapter);
     }
 
 
+    @Override
+    public void onClick() {
+        Intent intent = new Intent(getActivity().getApplicationContext(), DetailSeries.class);
+        startActivity(intent);
+
+    }
 }

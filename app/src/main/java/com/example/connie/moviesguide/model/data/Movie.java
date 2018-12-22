@@ -16,10 +16,9 @@ public class Movie {
     public int mId;
     public String mImage;
     public String mTitle;
-
     public String mDetails;
 
-    public Movie(int mId, String mImage, String mTitle,   String mDetails) {
+    public Movie(int mId, String mImage, String mTitle, String mDetails) {
         this.mId = mId;
         this.mImage = mImage;
         this.mTitle = mTitle;
@@ -27,7 +26,7 @@ public class Movie {
     }
 
 
-    public Movie(String title, String imagePath,   String detail) {
+    public Movie(String title, String imagePath, String detail) {
     }
 
     public int getmId() {

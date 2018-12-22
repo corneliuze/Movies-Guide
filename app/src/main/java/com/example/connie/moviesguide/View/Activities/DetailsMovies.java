@@ -16,7 +16,7 @@ import com.example.connie.moviesguide.viewmodels.MovieViewModel;
 
 import java.util.List;
 
-public class details_movies extends AppCompatActivity {
+public class DetailsMovies extends AppCompatActivity {
     ImageView movieImageView;
     TextView releaseDateTextView;
     Button videosButton;

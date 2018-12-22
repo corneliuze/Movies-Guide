@@ -6,6 +6,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.connie.moviesguide.R;
+import com.example.connie.moviesguide.View.Activities.DetailsMovies;
 import com.example.connie.moviesguide.View.Adapters.MovieAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.model.data.MovieRepository;
@@ -39,7 +41,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DiscoverFragments extends Fragment {
+public class DiscoverFragments extends Fragment implements MovieAdapter.OnClickListener{
 
     private Context context;
     private RecyclerView recyclerView;
@@ -54,6 +56,7 @@ public class DiscoverFragments extends Fragment {
     private MovieRepository movieRepository;
     private MovieAdapter movieAdapter;
 
+    MovieAdapter.OnClickListener onClickListener;
 
 
     public DiscoverFragments() {
@@ -67,12 +70,11 @@ public class DiscoverFragments extends Fragment {
         View view = inflater.inflate(R.layout.fragment_discover_fragments, container, false);
 
         context = getActivity().getApplicationContext();
-        int numberOfBoxes = 2;
         layoutManager = new GridLayoutManager(context, 2);
         recyclerView = view.findViewById(R.id.movie_detail_recyclerview);
 
-         recyclerView.setLayoutManager(layoutManager);
-         movieAdapter = new MovieAdapter(context, (List<Movie>) movie);
+        recyclerView.setLayoutManager(layoutManager);
+        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
         recyclerView.setAdapter(movieAdapter);
 
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
@@ -86,6 +88,12 @@ public class DiscoverFragments extends Fragment {
         spinner.setAdapter(adapter);
 
         return  view;
+    }
+
+    @Override
+    public void onClick() {
+        Intent intent = new Intent(getActivity().getApplicationContext(), DetailsMovies.class);
+        startActivity(intent);
     }
 
 
@@ -142,7 +150,7 @@ public class DiscoverFragments extends Fragment {
 
     }
     public void setView(){
-        movieAdapter = new MovieAdapter(context, (List<Movie>) movie);
+        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
         recyclerView.setAdapter(movieAdapter);
     }
 
