@@ -37,13 +37,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(context).inflate(R.layout.grid_layout_item, viewGroup, false);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              onClickListener.onClick();
-
-            }
-        });
         return new MovieViewHolder(view);
     }
 
@@ -52,6 +45,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Movie currentMovies = movie.get(i);
         Glide.with(moviesFragment).load(currentMovies.getmImage()).into(movieImageView);
         String movieTitle = currentMovies.getmTitle().toString();
+        movieImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         movieViewHolder.movieTitleTextView.setText(movieTitle);
 
 
