@@ -1,8 +1,6 @@
 package com.example.connie.moviesguide.View.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +16,7 @@ import com.example.connie.moviesguide.model.data.Movie;
 
 import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieViewHolder> {
     private  Context context;
     private List<Movie> movie;
     private MoviesFragment moviesFragment;
@@ -27,7 +25,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
 
 
-    public MovieAdapter(Context context, OnClickListener onClickListener,  List<Movie> movie){
+    public MovieListAdapter(Context context, OnClickListener onClickListener, List<Movie> movie){
         this.context = context;
         this.movie = movie;
         this.onClickListener = onClickListener;

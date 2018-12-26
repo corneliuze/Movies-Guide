@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 
 import com.example.connie.moviesguide.R;
 import com.example.connie.moviesguide.View.Activities.DetailsMovies;
-import com.example.connie.moviesguide.View.Adapters.MovieAdapter;
+import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.model.data.MovieRepository;
 import com.example.connie.moviesguide.model.service.ApiData;
@@ -31,13 +31,13 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MoviesFragment extends Fragment implements MovieAdapter.OnClickListener{
+public class MoviesFragment extends Fragment implements MovieListAdapter.OnClickListener{
 
 
     private Context context;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private MovieAdapter movieAdapter;
+    private MovieListAdapter movieListAdapter;
     private MovieApiInterface movieApiInterface;
     private  List<MovieModel> movieRepo;
     private MovieViewModel movieViewModel;
@@ -45,7 +45,7 @@ public class MoviesFragment extends Fragment implements MovieAdapter.OnClickList
     private MovieApiClient movieApiClient;
     private MovieRepository movieRepository;
     private Movie movie;
-    MovieAdapter.OnClickListener onClickListener;
+    MovieListAdapter.OnClickListener onClickListener;
 
 
 
@@ -64,8 +64,8 @@ public class MoviesFragment extends Fragment implements MovieAdapter.OnClickList
         recyclerView = view.findViewById(R.id.movie_detail_recyclerview);
         layoutManager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(layoutManager);
-        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
-        recyclerView.setAdapter(movieAdapter);
+        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
+        recyclerView.setAdapter(movieListAdapter);
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
         movieApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo);
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
@@ -116,13 +116,13 @@ public class MoviesFragment extends Fragment implements MovieAdapter.OnClickList
         movieViewModel.getAllMovie().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
-                movieAdapter.setData(movies);
+                movieListAdapter.setData(movies);
             }
         });
     }
     public void setView(){
-        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
-        recyclerView.setAdapter(movieAdapter);
+        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
+        recyclerView.setAdapter(movieListAdapter);
     }
 
 

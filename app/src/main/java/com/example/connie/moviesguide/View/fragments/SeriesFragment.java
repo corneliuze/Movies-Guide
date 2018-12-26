@@ -9,18 +9,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.connie.moviesguide.R;
 import com.example.connie.moviesguide.View.Activities.DetailSeries;
-import com.example.connie.moviesguide.View.Adapters.MovieAdapter;
+import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.model.data.MovieRepository;
 import com.example.connie.moviesguide.model.service.ApiData;
@@ -34,11 +30,11 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SeriesFragment extends Fragment implements MovieAdapter.OnClickListener {
+public class SeriesFragment extends Fragment implements MovieListAdapter.OnClickListener {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
     private ApiData seriesApiData;
-    private MovieAdapter movieAdapter;
+    private MovieListAdapter movieListAdapter;
     private Context context;
     private MovieApiInterface movieApiInterface;
     private List<MovieModel> movieRepo;
@@ -46,7 +42,7 @@ public class SeriesFragment extends Fragment implements MovieAdapter.OnClickList
     private Movie movie;
     private MovieRepository movieRepository;
     private MovieViewModel movieViewModel;
-    MovieAdapter.OnClickListener onClickListener;
+    MovieListAdapter.OnClickListener onClickListener;
 
     public SeriesFragment() {
         // Required empty public constructor
@@ -60,8 +56,8 @@ public class SeriesFragment extends Fragment implements MovieAdapter.OnClickList
         recyclerView = view.findViewById(R.id.movie_detail_recyclerview);
         layoutManager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(layoutManager);
-        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
-        recyclerView.setAdapter(movieAdapter);
+        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
+        recyclerView.setAdapter(movieListAdapter);
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
         seriesApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo);
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
@@ -112,13 +108,13 @@ public class SeriesFragment extends Fragment implements MovieAdapter.OnClickList
         movieViewModel.getAllMovie().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
-                movieAdapter.setData(movies);
+                movieListAdapter.setData(movies);
             }
         });
     }
     public void setView(){
-        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
-        recyclerView.setAdapter(movieAdapter);
+        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
+        recyclerView.setAdapter(movieListAdapter);
     }
 
 

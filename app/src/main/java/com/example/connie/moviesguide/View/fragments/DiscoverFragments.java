@@ -2,7 +2,6 @@ package com.example.connie.moviesguide.View.fragments;
 
 
 import android.app.Activity;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -11,23 +10,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.connie.moviesguide.R;
 import com.example.connie.moviesguide.View.Activities.DetailsMovies;
-import com.example.connie.moviesguide.View.Adapters.MovieAdapter;
+import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.model.data.MovieRepository;
 import com.example.connie.moviesguide.model.service.ApiData;
@@ -41,7 +35,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DiscoverFragments extends Fragment implements MovieAdapter.OnClickListener{
+public class DiscoverFragments extends Fragment implements MovieListAdapter.OnClickListener{
 
     private Context context;
     private RecyclerView recyclerView;
@@ -54,9 +48,9 @@ public class DiscoverFragments extends Fragment implements MovieAdapter.OnClickL
     Spinner spinner;
     private MovieViewModel movieViewModel;
     private MovieRepository movieRepository;
-    private MovieAdapter movieAdapter;
+    private MovieListAdapter movieListAdapter;
 
-    MovieAdapter.OnClickListener onClickListener;
+    MovieListAdapter.OnClickListener onClickListener;
 
 
     public DiscoverFragments() {
@@ -74,8 +68,8 @@ public class DiscoverFragments extends Fragment implements MovieAdapter.OnClickL
         recyclerView = view.findViewById(R.id.movie_detail_recyclerview);
 
         recyclerView.setLayoutManager(layoutManager);
-        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
-        recyclerView.setAdapter(movieAdapter);
+        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
+        recyclerView.setAdapter(movieListAdapter);
 
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
         movieApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo);
@@ -144,14 +138,14 @@ public class DiscoverFragments extends Fragment implements MovieAdapter.OnClickL
         movieViewModel.getAllMovie().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
-                movieAdapter.setData(movies);
+                movieListAdapter.setData(movies);
             }
         });
 
     }
     public void setView(){
-        movieAdapter = new MovieAdapter(context, onClickListener, (List<Movie>) movie);
-        recyclerView.setAdapter(movieAdapter);
+        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
+        recyclerView.setAdapter(movieListAdapter);
     }
 
 
