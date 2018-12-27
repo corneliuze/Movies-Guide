@@ -12,19 +12,11 @@
 
     <include layout = "@layout/toolbar_movie"
         android:id="@+id/main_toolbar"/>
-
-
-    <FrameLayout
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/movie_grid_recycler_view">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"
-            android:textColor="@color/black"
-            />
-    </FrameLayout>
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>
 </FrameLayout>

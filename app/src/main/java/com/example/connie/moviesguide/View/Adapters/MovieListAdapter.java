@@ -80,7 +80,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
 
     public interface OnClickListener{
-        void onClick();
+        void onClick(Movie movie);
     }
 
 

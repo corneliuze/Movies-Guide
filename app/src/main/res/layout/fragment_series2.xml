@@ -11,21 +11,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".View.fragments.SeriesFragment">
 
-    <include layout = "@layout/toolbar_discover"
+    <include layout = "@layout/toolbar_tv"
         android:id="@+id/main_toolbar"/>
 
-
-    <FrameLayout
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"
-            android:textColor="@color/black"
-            />
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:id="@+id/series_grid_recyclerview"></android.support.v7.widget.RecyclerView>
 </LinearLayout>
 </FrameLayout>

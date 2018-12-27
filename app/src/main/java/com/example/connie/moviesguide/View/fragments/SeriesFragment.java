@@ -53,7 +53,7 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_series2, container, false);
-        recyclerView = view.findViewById(R.id.movie_detail_recyclerview);
+        recyclerView = view.findViewById(R.id.series_grid_recyclerview);
         layoutManager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(layoutManager);
         movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
@@ -62,7 +62,7 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
         seriesApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo);
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
 
-        android.widget.SearchView searchView = view.findViewById(R.id.searchView2);
+        android.widget.SearchView searchView = view.findViewById(R.id.searchView_series);
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
 
             @Override
@@ -119,7 +119,7 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
 
 
     @Override
-    public void onClick() {
+    public void onClick(Movie movie) {
         Intent intent = new Intent(getActivity().getApplicationContext(), DetailSeries.class);
         startActivity(intent);
 

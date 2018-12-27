@@ -18,7 +18,7 @@ import java.util.List;
 
 public class DetailsMovies extends AppCompatActivity {
     ImageView movieImageView;
-    TextView releaseDateTextView;
+
     Button videosButton;
     private MovieDetailAdapter movieDetailAdapter;
     private RecyclerView recyclerView;
@@ -33,7 +33,6 @@ public class DetailsMovies extends AppCompatActivity {
         setContentView(R.layout.activity_details_movies);
 
         movieImageView = findViewById(R.id.movie_detail_imageview);
-        releaseDateTextView = findViewById(R.id.releasedate_textview);
         videosButton = findViewById(R.id.tailer_textview);
         recyclerView = findViewById(R.id.movie_detail_recyclerview);
         layoutManager = new LinearLayoutManager(context);

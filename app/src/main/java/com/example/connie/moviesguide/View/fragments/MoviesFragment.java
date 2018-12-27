@@ -61,7 +61,7 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_movies2, container, false);
-        recyclerView = view.findViewById(R.id.movie_detail_recyclerview);
+        recyclerView = view.findViewById(R.id.movie_grid_recycler_view);
         layoutManager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(layoutManager);
         movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
@@ -69,7 +69,7 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
         movieApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo);
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        android.widget.SearchView searchView = view.findViewById(R.id.searchView);
+        android.widget.SearchView searchView = view.findViewById(R.id.searchView_movie);
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -127,7 +127,7 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
 
 
     @Override
-    public void onClick() {
+    public void onClick(Movie movie) {
         Intent intent = new Intent(getActivity().getApplicationContext(), DetailsMovies.class);
         startActivity(intent);
 

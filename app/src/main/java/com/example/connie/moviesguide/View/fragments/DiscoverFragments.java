@@ -64,12 +64,12 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         View view = inflater.inflate(R.layout.fragment_discover_fragments, container, false);
 
         context = getActivity().getApplicationContext();
-        layoutManager = new GridLayoutManager(context, 2);
-        recyclerView = view.findViewById(R.id.movie_detail_recyclerview);
-
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView = view.findViewById(R.id.movie_discover_recycler_view);
         movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
         recyclerView.setAdapter(movieListAdapter);
+        layoutManager = new GridLayoutManager(context, 2);
+        recyclerView.setLayoutManager(layoutManager);
+
 
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
         movieApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo);
@@ -85,7 +85,7 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
     }
 
     @Override
-    public void onClick() {
+    public void onClick(Movie movie) {
         Intent intent = new Intent(getActivity().getApplicationContext(), DetailsMovies.class);
         startActivity(intent);
     }
@@ -148,6 +148,7 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         recyclerView.setAdapter(movieListAdapter);
     }
 
+   
 
 
 }
