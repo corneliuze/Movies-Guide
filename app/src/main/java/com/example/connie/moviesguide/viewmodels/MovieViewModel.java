@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.model.data.MovieRepository;
-import com.example.connie.moviesguide.model.service.MovieModel;
 
 import java.util.List;
 

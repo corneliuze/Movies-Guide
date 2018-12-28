@@ -17,13 +17,14 @@ import retrofit2.http.Query;
 public class ApiData {
     private MovieApiClient movieApiClient;
     private MovieApiInterface movieApiInterface;
-    private MovieModel movieRepo;
+    private Result movieRepo;
     private MovieViewModel movieViewModel;
-    private String  title;
+    private List<Result_> movieData;
+
     public static final String TAG = MainActivity.class.getSimpleName();
 
 
-    public ApiData(MovieApiClient movieApiClient, MovieApiInterface movieApiInterface, MovieModel movieRepo) {
+    public ApiData(MovieApiClient movieApiClient, MovieApiInterface movieApiInterface, Result movieRepo) {
         this.movieApiClient = movieApiClient;
         this.movieApiInterface = movieApiInterface;
         this.movieRepo = movieRepo;
@@ -32,26 +33,30 @@ public class ApiData {
 
 
     public void getMovieApiData() {
-        Call<MovieModel> call = movieApiInterface.getMovieDiscover();
-        call.enqueue(new Callback<MovieModel>() {
+        Call<Result> call = movieApiInterface.getMovieDiscover();
+        call.enqueue(new Callback<Result>() {
             @Override
-            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
+            public void onResponse(Call<Result> call, Response<Result> response) {
                 movieRepo = response.body();
 
-                Log.e(TAG, "api data is here");
-                String title = movieRepo.getTitle();
-                String imagePath = movieRepo.getPosterPath();
-                String detail = movieRepo.getOverview();
+                for (int i = 0; i< movieData.size(); i++) {
 
-                Movie movie = new Movie(title, imagePath, detail);
-                movieViewModel.insertMovie(movie);
 
+                    Log.e(TAG, "api data is here");
+                    String title = movieRepo.getResults().get(i).getTitle();
+                    String imagePath = movieRepo.getResults().get(i).getPosterPath();
+                    String detail = movieRepo.getResults().get(i).getOverview();
+
+                    Movie movie = new Movie(title, imagePath, detail);
+
+                    movieViewModel.insertMovie(movie);
+                }
                 }
 
 
 
             @Override
-            public void onFailure(Call<MovieModel> call, Throwable t) {
+            public void onFailure(Call<Result> call, Throwable t) {
 
             }
         });
@@ -59,73 +64,76 @@ public class ApiData {
     }
 
     public void getSeriesApiData(){
-        Call<MovieModel> call = movieApiInterface.getSeriesDiscover();
-        call.enqueue(new Callback<MovieModel>() {
+        Call<Result> call = movieApiInterface.getSeriesDiscover();
+        call.enqueue(new Callback<Result>() {
             @Override
-            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
+            public void onResponse(Call<Result> call, Response<Result> response) {
                 movieRepo = response.body();
-                String title = movieRepo.getTitle();
-                String imagePath = movieRepo.getPosterPath();
-                String detail = movieRepo.getOverview();
+                for (int i = 0; i< movieData.size(); i++) {
+                String title = movieRepo.getResults().get(i).getTitle();
+                String imagePath = movieRepo.getResults().get(i).getPosterPath();
+                String detail = movieRepo.getResults().get(i).getOverview();
 
                 Movie movie = new Movie(title, imagePath, detail);
                 movieViewModel.insertMovie(movie);
 
-
-                }
+                }}
 
 
             @Override
-            public void onFailure(Call<MovieModel> call, Throwable t) {
+            public void onFailure(Call<Result> call, Throwable t) {
 
             }
         });
     }
 
     public void getSeriesApiSearch(){
-        Call<MovieModel> call = movieApiInterface.searchTv("query");
-        call.enqueue(new Callback<MovieModel>() {
+        Call<Result> call = movieApiInterface.searchTv("query");
+        call.enqueue(new Callback<Result>() {
             @Override
-            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
+            public void onResponse(Call<Result> call, Response<Result> response) {
                 movieRepo = response.body();
-                String title = movieRepo.getTitle();
-                String imagePath = movieRepo.getPosterPath();
-                String detail = movieRepo.getOverview();
+                for (int i = 0; i < movieData.size(); i++) {
+                    String title = movieRepo.getResults().get(i).getTitle();
+                    String imagePath = movieRepo.getResults().get(i).getPosterPath();
+                    String detail = movieRepo.getResults().get(i).getOverview();
 
-                Movie movie = new Movie(title, imagePath, detail);
-                movieViewModel.insertMovie(movie);
+                    Movie movie = new Movie(title, imagePath, detail);
+                    movieViewModel.insertMovie(movie);
 
                 }
 
-
+            }
 
             @Override
-            public void onFailure(Call<MovieModel> call, Throwable t) {
+            public void onFailure(Call<Result> call, Throwable t) {
 
             }
         });
     }
     public void getMovieApiSearch(){
 
-        Call<MovieModel> call = movieApiInterface.searchMovies("query");
-        call.enqueue(new Callback<MovieModel>() {
+        Call<Result> call = movieApiInterface.searchMovies("query");
+        call.enqueue(new Callback<Result>() {
             @Override
-            public void onResponse(Call <MovieModel> call, Response<MovieModel> response) {
+            public void onResponse(Call <Result> call, Response<Result> response) {
                 movieRepo = response.body();
-                String title = movieRepo.getTitle();
-                String imagePath = movieRepo.getPosterPath();
-                String detail = movieRepo.getOverview();
+                for (int i = 0; i< movieData.size(); i++) {
+                String title = movieRepo.getResults().get(i).getTitle();
+                String imagePath = movieRepo.getResults().get(i).getPosterPath();
+                String detail = movieRepo.getResults().get(i).getOverview();
 
                 Movie movie = new Movie(title, imagePath, detail);
                 movieViewModel.insertMovie(movie);
 
 
 
-                }
+
+                }}
 
 
             @Override
-            public void onFailure(Call<MovieModel> call, Throwable t) {
+            public void onFailure(Call<Result> call, Throwable t) {
 
             }
         });

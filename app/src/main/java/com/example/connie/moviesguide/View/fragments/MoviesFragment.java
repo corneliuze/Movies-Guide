@@ -23,7 +23,6 @@ import com.example.connie.moviesguide.model.data.MovieRepository;
 import com.example.connie.moviesguide.model.service.ApiData;
 import com.example.connie.moviesguide.model.service.MovieApiClient;
 import com.example.connie.moviesguide.model.service.MovieApiInterface;
-import com.example.connie.moviesguide.model.service.MovieModel;
 import com.example.connie.moviesguide.viewmodels.MovieViewModel;
 
 import java.util.List;
