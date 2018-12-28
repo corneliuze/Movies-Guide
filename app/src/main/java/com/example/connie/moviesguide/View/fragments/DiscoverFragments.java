@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.Spinner;
 
 import com.example.connie.moviesguide.R;
 import com.example.connie.moviesguide.View.Activities.DetailsMovies;
+import com.example.connie.moviesguide.View.Activities.MainActivity;
 import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.model.data.MovieRepository;
@@ -44,12 +46,12 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
     private MovieApiClient movieApiClient;
     private MovieApiInterface movieApiInterface;
     private Movie movie;
-    private List<MovieModel> movieRepo;
+    private MovieModel movieRepo;
     Spinner spinner;
     private MovieViewModel movieViewModel;
     private MovieRepository movieRepository;
     private MovieListAdapter movieListAdapter;
-
+    public static final String TAG = MainActivity.class.getSimpleName();
     MovieListAdapter.OnClickListener onClickListener;
 
 
@@ -69,6 +71,7 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         recyclerView.setAdapter(movieListAdapter);
         layoutManager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(layoutManager);
+        Log.e(TAG, "recycler view set, awaiting data");
 
 
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
@@ -80,6 +83,8 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
                 R.array.sort_by, R.layout.support_simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        Log.e(TAG, "wait, while we load the data for you");
 
         return  view;
     }
@@ -96,17 +101,25 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             if (i == 0){
+                Log.e(TAG, "something is wrong here please");
                 adapterView.getItemAtPosition(i);
                 if (movie != null){
                     movieViewModel.deleteAllMovie();
+
+                    Log.e(TAG, "something is wrong, view model is not deleting");
                     movieApiData.getMovieApiData();
                     setView();
+                    Log.e(TAG, "something is wrong");
                     getAllMovie();
 
                     }else{
+                    Log.e(TAG, "data is empty");
                     movieApiData.getMovieApiData();
+                    Log.e(TAG, "api is got data");
                     setView();
+                    Log.e(TAG, "view set");
                     getAllMovie();
+                    Log.e(TAG, "all done");
 
                     }
                     }else {

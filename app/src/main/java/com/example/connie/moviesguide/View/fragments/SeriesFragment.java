@@ -37,7 +37,7 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
     private MovieListAdapter movieListAdapter;
     private Context context;
     private MovieApiInterface movieApiInterface;
-    private List<MovieModel> movieRepo;
+    private MovieModel movieRepo;
     private MovieApiClient movieApiClient;
     private Movie movie;
     private MovieRepository movieRepository;

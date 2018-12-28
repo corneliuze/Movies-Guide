@@ -39,7 +39,7 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
     private RecyclerView.LayoutManager layoutManager;
     private MovieListAdapter movieListAdapter;
     private MovieApiInterface movieApiInterface;
-    private  List<MovieModel> movieRepo;
+    private  MovieModel movieRepo;
     private MovieViewModel movieViewModel;
     private ApiData movieApiData;
     private MovieApiClient movieApiClient;
