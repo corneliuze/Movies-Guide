@@ -5,6 +5,8 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.connie.moviesguide.R;
 import com.example.connie.moviesguide.View.Activities.DetailsMovies;
@@ -23,6 +26,7 @@ import com.example.connie.moviesguide.model.data.MovieRepository;
 import com.example.connie.moviesguide.model.service.ApiData;
 import com.example.connie.moviesguide.model.service.MovieApiClient;
 import com.example.connie.moviesguide.model.service.MovieApiInterface;
+import com.example.connie.moviesguide.model.service.Result;
 import com.example.connie.moviesguide.viewmodels.MovieViewModel;
 
 import java.util.List;
@@ -30,7 +34,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MoviesFragment extends Fragment implements MovieListAdapter.OnClickListener{
+public class MoviesFragment extends Fragment implements MovieListAdapter.OnClickListener {
 
 
     private Context context;
@@ -38,13 +42,16 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
     private RecyclerView.LayoutManager layoutManager;
     private MovieListAdapter movieListAdapter;
     private MovieApiInterface movieApiInterface;
-    private  MovieModel movieRepo;
+    private Result movieRepo;
     private MovieViewModel movieViewModel;
     private ApiData movieApiData;
     private MovieApiClient movieApiClient;
     private MovieRepository movieRepository;
     private Movie movie;
     MovieListAdapter.OnClickListener onClickListener;
+    private  boolean isConnected;
+    private  String queryText;
+    private SeriesFragment seriesFragment;
 
 
 
@@ -66,21 +73,24 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
         movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
         recyclerView.setAdapter(movieListAdapter);
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
-        movieApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo);
+        movieApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo, this, seriesFragment);
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         android.widget.SearchView searchView = view.findViewById(R.id.searchView_movie);
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                if (movie != null){
-                    movieRepository.deleteAllMovies();
+                 queryText = s;
+                if (isConnected() == false){
+                    Toast.makeText(context, "Turn On Your Connection", Toast.LENGTH_SHORT).show();
+                }
+
                     movieApiData.getMovieApiSearch();
                     movieViewModel.getMovieById(s);
-                }else{
-                    movieApiData.getMovieApiSearch();
-                    movieViewModel.getMovieById(s);
-                    }
+                // since the user need to search, he doesn't need internet connection so its just query and display
+
+
                     return true;
+
             }
 
             @Override
@@ -95,16 +105,25 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
         return view;
 
     }
+   public String  getQueryText(){
+        return queryText;
+   }
 
     public void displayData(){
+        if (isConnected() == false){
+            setView();
+            getAllMovie();
+        }
         if (movie != null){
             movieViewModel.deleteAllMovie();
             movieApiData.getMovieApiData();
+            movieViewModel.insertMovie(movie);
             setView();
             getAllMovie();
 
         }else{
             movieApiData.getMovieApiData();
+            movieViewModel.insertMovie(movie);
             setView();
             getAllMovie();
 
@@ -130,5 +149,12 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
         Intent intent = new Intent(getActivity().getApplicationContext(), DetailsMovies.class);
         startActivity(intent);
 
+    }
+
+    public  boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInternet = connectivityManager.getActiveNetworkInfo();
+        isConnected = activeInternet!= null && activeInternet.isConnectedOrConnecting();
+        return isConnected;
     }
 }

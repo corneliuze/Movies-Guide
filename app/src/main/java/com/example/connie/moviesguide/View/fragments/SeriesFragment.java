@@ -5,6 +5,8 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,7 @@ import com.example.connie.moviesguide.model.data.MovieRepository;
 import com.example.connie.moviesguide.model.service.ApiData;
 import com.example.connie.moviesguide.model.service.MovieApiClient;
 import com.example.connie.moviesguide.model.service.MovieApiInterface;
+import com.example.connie.moviesguide.model.service.Result;
 import com.example.connie.moviesguide.viewmodels.MovieViewModel;
 
 import java.util.List;
@@ -36,12 +39,15 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
     private MovieListAdapter movieListAdapter;
     private Context context;
     private MovieApiInterface movieApiInterface;
-    private MovieModel movieRepo;
+    private Result movieRepo;
     private MovieApiClient movieApiClient;
     private Movie movie;
     private MovieRepository movieRepository;
     private MovieViewModel movieViewModel;
     MovieListAdapter.OnClickListener onClickListener;
+    private boolean isConnected;
+    private String queryText;
+    private MoviesFragment moviesFragment;
 
     public SeriesFragment() {
         // Required empty public constructor
@@ -58,7 +64,7 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
         movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
         recyclerView.setAdapter(movieListAdapter);
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
-        seriesApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo);
+        seriesApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo,  moviesFragment, this);
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
 
         android.widget.SearchView searchView = view.findViewById(R.id.searchView_series);
@@ -66,6 +72,7 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
 
             @Override
             public boolean onQueryTextSubmit(String s) {
+                queryText = s;
                 if (movie != null){
                     movieRepository.deleteAllMovies();
                     seriesApiData.getSeriesApiData();
@@ -84,21 +91,32 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
                 return false;
             }
         });
-        displayData();
+        displayData(); // the display is for when the search view is not in use
         // Inflate the layout for this fragment
         return view;
 
     }
 
+    public String getQueryText(){
+        return  queryText;
+    }
+
     public void displayData(){
+        if (isConnected() == false){
+            setView();
+            getAllSeries();
+
+        }
         if (movie != null){
             movieViewModel.deleteAllMovie();
             seriesApiData.getSeriesApiData();
+            movieViewModel.insertMovie(movie);
             setView();
             getAllSeries();
 
         }
         seriesApiData.getSeriesApiData();
+        movieViewModel.insertMovie(movie);
         setView();
         getAllSeries();
         }
@@ -122,5 +140,12 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
         Intent intent = new Intent(getActivity().getApplicationContext(), DetailSeries.class);
         startActivity(intent);
 
+    }
+
+    public  boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInternet = connectivityManager.getActiveNetworkInfo();
+        isConnected = activeInternet!= null && activeInternet.isConnectedOrConnecting();
+        return isConnected;
     }
 }

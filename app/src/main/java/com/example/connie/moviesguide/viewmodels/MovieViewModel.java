@@ -25,6 +25,7 @@ public class MovieViewModel extends AndroidViewModel{
     public LiveData<Movie> getMovieById(String id){
         return repository.getMovieById(id);
     }
+
     public void insertMovie(Movie movie){
         MovieViewModel.insertTask insertTask = new MovieViewModel.insertTask();
         insertTask.execute(movie);

@@ -25,7 +25,6 @@ public class MovieRepository {
     public void insertMovie(Movie movie){
         movieDatabase.movieDao().insertMovie(movie);
     }
-
     public void deleteAllMovies(){
         movieDatabase.movieDao().deleteAllMovie();
     }

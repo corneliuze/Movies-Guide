@@ -3,6 +3,8 @@ package com.example.connie.moviesguide.model.service;
 import android.util.Log;
 
 import com.example.connie.moviesguide.View.Activities.MainActivity;
+import com.example.connie.moviesguide.View.fragments.MoviesFragment;
+import com.example.connie.moviesguide.View.fragments.SeriesFragment;
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.viewmodels.MovieViewModel;
 
@@ -20,14 +22,18 @@ public class ApiData {
     private Result movieRepo;
     private MovieViewModel movieViewModel;
     private List<Result_> movieData;
+    private MoviesFragment moviesFragment;
+    private SeriesFragment seriesFragment;
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
 
-    public ApiData(MovieApiClient movieApiClient, MovieApiInterface movieApiInterface, Result movieRepo) {
+    public ApiData(MovieApiClient movieApiClient, MovieApiInterface movieApiInterface, Result movieRepo, MoviesFragment moviesFragment, SeriesFragment seriesFragment) {
         this.movieApiClient = movieApiClient;
         this.movieApiInterface = movieApiInterface;
         this.movieRepo = movieRepo;
+        this.moviesFragment = moviesFragment;
+        this.seriesFragment = seriesFragment;
 
     }
 
@@ -88,7 +94,8 @@ public class ApiData {
     }
 
     public void getSeriesApiSearch(){
-        Call<Result> call = movieApiInterface.searchTv("query");
+        String queryTextSeries = seriesFragment.getQueryText();
+        Call<Result> call = movieApiInterface.searchTv(queryTextSeries);
         call.enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
@@ -112,8 +119,9 @@ public class ApiData {
         });
     }
     public void getMovieApiSearch(){
+        String queryText = moviesFragment.getQueryText();
 
-        Call<Result> call = movieApiInterface.searchMovies("query");
+        Call<Result> call = movieApiInterface.searchMovies(queryText);
         call.enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call <Result> call, Response<Result> response) {

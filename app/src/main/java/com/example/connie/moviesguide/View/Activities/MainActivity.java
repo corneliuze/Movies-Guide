@@ -1,5 +1,8 @@
 package com.example.connie.moviesguide.View.Activities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -16,7 +19,7 @@ import com.example.connie.moviesguide.View.fragments.FavoritesFragment;
 import com.example.connie.moviesguide.View.fragments.MoviesFragment;
 import com.example.connie.moviesguide.View.fragments.SeriesFragment;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity   {
 
     private BottomNavigationView bottomNavigationView;
     private FrameLayout frameLayout;
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity  {
     private MoviesFragment moviesFragment;
     private SeriesFragment seriesFragment;
     private FavoritesFragment favoritesFragment;
+    private Context context;
+    private boolean isConnected;
 
 
 
@@ -81,4 +86,20 @@ public class MainActivity extends AppCompatActivity  {
         fragmentTransaction.replace(R.id.main_frame, fragment);
         fragmentTransaction.commit();
     }
+
+    public  boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInternet = connectivityManager.getActiveNetworkInfo();
+        isConnected = activeInternet!= null && activeInternet.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    public void onStart() {
+        super.onStart();
+
+
+
+    }
+
+
 }

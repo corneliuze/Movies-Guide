@@ -40,16 +40,21 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder movieViewHolder, int i) {
-        Movie currentMovies = movie.get(i);
-        Glide.with(moviesFragment).load(currentMovies.getmImage()).into(movieImageView);
-        String movieTitle = currentMovies.getmTitle().toString();
-        movieImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (movie != null){
+            Movie currentMovies = movie.get(i);
+            Glide.with(moviesFragment).load(currentMovies.getmImage()).into(movieImageView);
+            String movieTitle = currentMovies.getmTitle().toString();
+            movieImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+            movieViewHolder.movieTitleTextView.setText(movieTitle);
 
             }
-        });
-        movieViewHolder.movieTitleTextView.setText(movieTitle);
+            movieViewHolder.movieTitleTextView.setText("No movies yet, Turn on your Connection");
+        //this is for the first time the user is using the app with out internet connection
 
 
     }
