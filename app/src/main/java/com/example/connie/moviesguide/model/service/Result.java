@@ -1,27 +1,59 @@
 package com.example.connie.moviesguide.model.service;
+
+
 import java.io.Serializable;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Result implements Serializable, Parcelable
 {
 
-    @SerializedName("page")
+    @SerializedName("vote_count")
     @Expose
-    private Integer page;
-    @SerializedName("total_results")
+    private Integer voteCount;
+    @SerializedName("id")
     @Expose
-    private Integer totalResults;
-    @SerializedName("total_pages")
+    private Integer id;
+    @SerializedName("video")
     @Expose
-    private Integer totalPages;
-    @SerializedName("results")
+    private Boolean video;
+    @SerializedName("vote_average")
     @Expose
-    private List<Result_> results = null;
+    private Double voteAverage;
+    @SerializedName("title")
+    @Expose
+    private String title;
+    @SerializedName("popularity")
+    @Expose
+    private Double popularity;
+    @SerializedName("poster_path")
+    @Expose
+    private String posterPath;
+    @SerializedName("original_language")
+    @Expose
+    private String originalLanguage;
+    @SerializedName("original_title")
+    @Expose
+    private String originalTitle;
+    @SerializedName("genre_ids")
+    @Expose
+    private List<Integer> genreIds = null;
+    @SerializedName("backdrop_path")
+    @Expose
+    private String backdropPath;
+    @SerializedName("adult")
+    @Expose
+    private Boolean adult;
+    @SerializedName("overview")
+    @Expose
+    private String overview;
+    @SerializedName("release_date")
+    @Expose
+    private String releaseDate;
     public final static Parcelable.Creator<Result> CREATOR = new Creator<Result>() {
 
 
@@ -38,55 +70,155 @@ public class Result implements Serializable, Parcelable
 
     }
             ;
-    private final static long serialVersionUID = 6671147075272115769L;
+    private final static long serialVersionUID = -7415862493163851323L;
 
     protected Result(Parcel in) {
-        this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.results, (com.example.connie.moviesguide.model.service.Result_.class.getClassLoader()));
+        this.voteCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.voteAverage = ((Double) in.readValue((Double.class.getClassLoader())));
+        this.title = ((String) in.readValue((String.class.getClassLoader())));
+        this.popularity = ((Double) in.readValue((Double.class.getClassLoader())));
+        this.posterPath = ((String) in.readValue((String.class.getClassLoader())));
+        this.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
+        this.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
+        in.readList(this.genreIds, (java.lang.Integer.class.getClassLoader()));
+        this.backdropPath = ((String) in.readValue((String.class.getClassLoader())));
+        this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.overview = ((String) in.readValue((String.class.getClassLoader())));
+        this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public Result() {
     }
 
-    public Integer getPage() {
-        return page;
+    public Integer getVoteCount() {
+        return voteCount;
     }
 
-    public void setPage(Integer page) {
-        this.page = page;
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
     }
 
-    public Integer getTotalResults() {
-        return totalResults;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Integer getTotalPages() {
-        return totalPages;
+    public Boolean getVideo() {
+        return video;
     }
 
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
+    public void setVideo(Boolean video) {
+        this.video = video;
     }
 
-    public List<Result_> getResults() {
-        return results;
+    public Double getVoteAverage() {
+        return voteAverage;
     }
 
-    public void setResults(List<Result_> results) {
-        this.results = results;
+    public void setVoteAverage(Double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public String getOriginalLanguage() {
+        return originalLanguage;
+    }
+
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
+    }
+
+    public String getOriginalTitle() {
+        return originalTitle;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public Boolean getAdult() {
+        return adult;
+    }
+
+    public void setAdult(Boolean adult) {
+        this.adult = adult;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(page);
-        dest.writeValue(totalResults);
-        dest.writeValue(totalPages);
-        dest.writeList(results);
+        dest.writeValue(voteCount);
+        dest.writeValue(id);
+        dest.writeValue(video);
+        dest.writeValue(voteAverage);
+        dest.writeValue(title);
+        dest.writeValue(popularity);
+        dest.writeValue(posterPath);
+        dest.writeValue(originalLanguage);
+        dest.writeValue(originalTitle);
+        dest.writeList(genreIds);
+        dest.writeValue(backdropPath);
+        dest.writeValue(adult);
+        dest.writeValue(overview);
+        dest.writeValue(releaseDate);
     }
 
     public int describeContents() {

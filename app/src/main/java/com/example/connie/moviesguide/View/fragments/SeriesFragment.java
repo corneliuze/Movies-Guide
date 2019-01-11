@@ -1,6 +1,7 @@
 package com.example.connie.moviesguide.View.fragments;
 
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -15,18 +16,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.connie.moviesguide.R;
 import com.example.connie.moviesguide.View.Activities.DetailSeries;
 import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.model.data.MovieRepository;
-import com.example.connie.moviesguide.model.service.ApiData;
+import com.example.connie.moviesguide.model.service.MovieApiViewModel;
 import com.example.connie.moviesguide.model.service.MovieApiClient;
 import com.example.connie.moviesguide.model.service.MovieApiInterface;
-import com.example.connie.moviesguide.model.service.Result;
+import com.example.connie.moviesguide.model.service.ApiResponse;
 import com.example.connie.moviesguide.viewmodels.MovieViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,13 +38,13 @@ import java.util.List;
 public class SeriesFragment extends Fragment implements MovieListAdapter.OnClickListener {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
-    private ApiData seriesApiData;
+    private MovieApiViewModel seriesMovieApiViewModel;
     private MovieListAdapter movieListAdapter;
     private Context context;
     private MovieApiInterface movieApiInterface;
-    private Result movieRepo;
+    private ApiResponse ApiResponse;
     private MovieApiClient movieApiClient;
-    private Movie movie;
+    private ArrayList<Movie> allSeries = new ArrayList<>();
     private MovieRepository movieRepository;
     private MovieViewModel movieViewModel;
     MovieListAdapter.OnClickListener onClickListener;
@@ -61,27 +64,28 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
         recyclerView = view.findViewById(R.id.series_grid_recyclerview);
         layoutManager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(layoutManager);
-        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
+        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) allSeries, this);
         recyclerView.setAdapter(movieListAdapter);
+        context = getActivity().getApplicationContext();
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
-        seriesApiData = new ApiData(movieApiClient, movieApiInterface, movieRepo,  moviesFragment, this);
+        seriesMovieApiViewModel = ViewModelProviders.of(this).get(MovieApiViewModel.class);
+        seriesMovieApiViewModel.init(this);
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-
+        setView();
+        displayData();
         android.widget.SearchView searchView = view.findViewById(R.id.searchView_series);
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String s) {
-                queryText = s;
-                if (movie != null){
-                    movieRepository.deleteAllMovies();
-                    seriesApiData.getSeriesApiData();
-                    movieViewModel.getMovieById(s);
+                if (!isConnected()) {
+                    Toast.makeText(context, "switch on your internet connection", Toast.LENGTH_SHORT).show();
 
-                }else{
-                    seriesApiData.getSeriesApiSearch();
-                    movieViewModel.getMovieById(s);
-                    }
+                } else {
+
+                    seriesMovieApiViewModel.getSeriesApiSearch(s);
+
+                }
 
                 return true;
             }
@@ -91,37 +95,39 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
                 return false;
             }
         });
-        displayData(); // the display is for when the search view is not in use
+        // the display is for when the search view is not in use
         // Inflate the layout for this fragment
         return view;
 
     }
 
-    public String getQueryText(){
-        return  queryText;
+    public String getQueryText() {
+        return queryText;
     }
 
-    public void displayData(){
-        if (isConnected() == false){
-            setView();
+    public void displayData() {
+        Observer<List<Movie>> apiObserver = new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                if (movies == null) {
+                    getAllSeries();
+                } else {
+                    allSeries = (ArrayList<Movie>) movies;
+                    movieListAdapter.setData(allSeries);
+
+                }
+            }
+        };
+        if (!isConnected()) {
             getAllSeries();
+        } else {
+            seriesMovieApiViewModel.getSeriesApiData().observe(SeriesFragment.this, apiObserver);
 
         }
-        if (movie != null){
-            movieViewModel.deleteAllMovie();
-            seriesApiData.getSeriesApiData();
-            movieViewModel.insertMovie(movie);
-            setView();
-            getAllSeries();
+    }
 
-        }
-        seriesApiData.getSeriesApiData();
-        movieViewModel.insertMovie(movie);
-        setView();
-        getAllSeries();
-        }
 
-    public void getAllSeries(){
+    public void getAllSeries() {
         movieViewModel.getAllMovie().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
@@ -129,8 +135,9 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
             }
         });
     }
-    public void setView(){
-        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) movie);
+
+    public void setView() {
+        movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) allSeries, this);
         recyclerView.setAdapter(movieListAdapter);
     }
 
@@ -142,10 +149,10 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
 
     }
 
-    public  boolean isConnected() {
+    public boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeInternet = connectivityManager.getActiveNetworkInfo();
-        isConnected = activeInternet!= null && activeInternet.isConnectedOrConnecting();
+        isConnected = activeInternet != null && activeInternet.isConnectedOrConnecting();
         return isConnected;
     }
 }

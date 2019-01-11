@@ -2,6 +2,7 @@ package com.example.connie.moviesguide.View.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +20,16 @@ import java.util.List;
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieViewHolder> {
     private  Context context;
     private List<Movie> movie;
-    private MoviesFragment moviesFragment;
+    private Fragment fragment;
     ImageView movieImageView;
     OnClickListener onClickListener;
 
 
 
-    public MovieListAdapter(Context context, OnClickListener onClickListener, List<Movie> movie){
+    public MovieListAdapter(Context context, OnClickListener onClickListener, List<Movie> movie, Fragment fragment){
         this.context = context;
         this.movie = movie;
+        this.fragment = fragment;
         this.onClickListener = onClickListener;
     }
 
@@ -42,8 +44,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     public void onBindViewHolder(@NonNull MovieViewHolder movieViewHolder, int i) {
         if (movie != null){
             Movie currentMovies = movie.get(i);
-            Glide.with(moviesFragment).load(currentMovies.getmImage()).into(movieImageView);
-            String movieTitle = currentMovies.getmTitle().toString();
+            Glide.with(fragment).load(currentMovies.getmImage()).into(movieImageView);
+            String movieTitle = currentMovies.getmTitle();
             movieImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
