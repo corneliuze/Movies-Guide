@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.connie.moviesguide.R;
-import com.example.connie.moviesguide.View.fragments.MoviesFragment;
 import com.example.connie.moviesguide.model.data.Movie;
 
 import java.util.List;
@@ -21,9 +21,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     private  Context context;
     private List<Movie> movie;
     private Fragment fragment;
-    ImageView movieImageView;
     OnClickListener onClickListener;
 
+    private String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
 
 
     public MovieListAdapter(Context context, OnClickListener onClickListener, List<Movie> movie, Fragment fragment){
@@ -42,22 +42,17 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder movieViewHolder, int i) {
-        if (movie != null){
             Movie currentMovies = movie.get(i);
-            Glide.with(fragment).load(currentMovies.getmImage()).into(movieImageView);
+        Log.i("MovieAdapter", "Movie Image url is: " + currentMovies.getmImage());
+        Glide.with(fragment).load(IMAGE_BASE_URL + currentMovies.getmImage()).into(movieViewHolder.movieImageView);
             String movieTitle = currentMovies.getmTitle();
-            movieImageView.setOnClickListener(new View.OnClickListener() {
+        movieViewHolder.movieImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                 }
             });
             movieViewHolder.movieTitleTextView.setText(movieTitle);
-
-            }
-            movieViewHolder.movieTitleTextView.setText("No movies yet, Turn on your Connection");
-        //this is for the first time the user is using the app with out internet connection
-
 
     }
 
@@ -73,6 +68,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
         TextView movieTitleTextView;
+        ImageView movieImageView;
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             movieImageView = itemView.findViewById(R.id.grid_image_view);

@@ -1,7 +1,6 @@
 package com.example.connie.moviesguide.View.fragments;
 
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -13,13 +12,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.util.Log;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.example.connie.moviesguide.R;
@@ -27,10 +24,10 @@ import com.example.connie.moviesguide.View.Activities.DetailsMovies;
 import com.example.connie.moviesguide.View.Activities.MainActivity;
 import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
-import com.example.connie.moviesguide.model.service.MovieApiViewModel;
+import com.example.connie.moviesguide.model.service.ApiResponse;
 import com.example.connie.moviesguide.model.service.MovieApiClient;
 import com.example.connie.moviesguide.model.service.MovieApiInterface;
-import com.example.connie.moviesguide.model.service.ApiResponse;
+import com.example.connie.moviesguide.model.service.MovieApiViewModel;
 import com.example.connie.moviesguide.viewmodels.MovieViewModel;
 
 import java.util.ArrayList;
@@ -61,6 +58,19 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         // Required empty public constructor
     }
 
+    Observer<List<Movie>> apiObserver = new Observer<List<Movie>>() {
+        @Override
+        public void onChanged(@Nullable List<Movie> movies) {
+            if (movies == null) {
+                getAllMovie();
+            } else {
+                allMovies = (ArrayList<Movie>) movies;
+//                Log.i(TAG, "Observed data size is:" + movies.size());
+//                Log.i(TAG, "Observed data is:" + new Gson().toJson(movies));
+                movieListAdapter.setData(allMovies);
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,12 +91,52 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
 
         spinner = view.findViewById(R.id.options_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
-                R.array.sort_by, R.layout.support_simple_spinner_dropdown_item);
-        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
         Log.e(TAG, "wait, while we load the data for you");
         setView();
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                if (position == 0) {
+                    adapterView.getItemAtPosition(position);
+                    if (!isConnected()) {
+                        getAllMovie();
+
+                    } else {
+                        Log.e(TAG, "data is empty");
+                        movieMovieApiViewModel.getMovieApiData()
+                                .observe(DiscoverFragments.this, apiObserver);
+
+                    }
+                } else {
+                    adapterView.getItemAtPosition(position);
+                    if (!isConnected()) {
+                        getAllMovie();
+
+
+                    } else {
+                        Log.e(TAG, "something is right here please");
+                        movieMovieApiViewModel.getSeriesApiData().observe(DiscoverFragments.this, apiObserver);
+
+
+                    }
+
+
+                }
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                if (!isConnected) {
+                    Log.i(TAG, "no internet connection");
+                    getAllMovie();
+                }else {
+                    Log.i(TAG, "yes internet connection");
+                    movieMovieApiViewModel.getMovieApiData().observe(DiscoverFragments.this, apiObserver);
+                }
+            }
+        });
 
         return view;
     }
@@ -96,64 +146,6 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         Intent intent = new Intent(getActivity().getApplicationContext(), DetailsMovies.class);
         startActivity(intent);
     }
-
-
-    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
-
-        Observer<List<Movie>> apiObserver = new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                if (movies == null) {
-                    getAllMovie();
-                } else {
-                    allMovies = (ArrayList<Movie>) movies;
-                    movieListAdapter.setData(allMovies);
-                }
-            }
-        };
-
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            if (i == 0) {
-                Log.e(TAG, "something is wrong here please");
-                adapterView.getItemAtPosition(i);
-                if (!isConnected()) {
-                    getAllMovie();
-
-                } else {
-                 Log.e(TAG, "data is empty");
-                    movieMovieApiViewModel.getMovieApiData()
-                            .observe(DiscoverFragments.this, apiObserver);
-
-                }
-            } else {
-                adapterView.getItemAtPosition(i);
-                if (!isConnected()) {
-                    getAllMovie();
-
-
-                } else {
-
-                        movieMovieApiViewModel.getSeriesApiData().observe(DiscoverFragments.this, apiObserver);
-
-
-                    }
-
-
-                    }
-                }
-
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-            if (!isConnected){
-                getAllMovie();
-                }else {
-                movieMovieApiViewModel.getMovieApiData().observe(DiscoverFragments.this, apiObserver);
-            }
-    }}
-
-
 
     public void getAllMovie() {
         movieViewModel.getAllMovie().observe(DiscoverFragments.this, new Observer<List<Movie>>() {

@@ -5,7 +5,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.example.connie.moviesguide.View.Activities.MainActivity;
 import com.example.connie.moviesguide.model.data.Movie;
@@ -45,9 +44,9 @@ public class MovieApiViewModel extends ViewModel {
         @Override
         public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
             List<Result> allResults = response.body().getResults();
+//            Log.i("APIViewModel", "data received is: " + new Gson().toJson(allResults));
             List<Movie> allMovies = new ArrayList<>();
             for (Result result : allResults) {
-                Log.e(TAG, "api data is here");
                 String title = result.getTitle();
                 String imagePath = result.getPosterPath();
                 String detail = result.getOverview();
