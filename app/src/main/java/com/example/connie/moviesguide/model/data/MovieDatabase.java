@@ -11,6 +11,7 @@ public abstract  class MovieDatabase extends RoomDatabase {
     public abstract MovieDao movieDao();
 
     public static volatile MovieDatabase INSTANCE;
+
     static MovieDatabase getDatabase(final Context context){
         if (INSTANCE == null){
             synchronized (MovieDatabase.class){

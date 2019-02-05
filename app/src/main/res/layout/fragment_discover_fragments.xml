@@ -13,17 +13,20 @@
         <include
             android:id="@+id/main_toolbar"
             layout="@layout/toolbar_discover" />
-
         <Spinner
             android:id="@+id/options_spinner"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_marginBottom="10dp">
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:entries="@array/sort_by">
 
         </Spinner>
+
+
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:id="@+id/movie_discover_recycler_view">
 
         </android.support.v7.widget.RecyclerView>

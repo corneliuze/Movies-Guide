@@ -31,13 +31,10 @@ public class MovieApiViewModel extends ViewModel {
     public void init(Fragment fragment){
         movieViewModel= ViewModelProviders.of(fragment).get(MovieViewModel.class);
         // initializing the viewmodel for the database
-
         Retrofit retrofit = MovieApiClient.getMovieApiClient();
         //getting the instance of retrofit
-
         movieApiInterface = retrofit.create(MovieApiInterface.class);
         //intializing the interface
-
     }
 
 

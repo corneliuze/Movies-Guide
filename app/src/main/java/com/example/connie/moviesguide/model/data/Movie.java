@@ -27,6 +27,9 @@ public class Movie {
 
 
     public Movie(String title, String imagePath, String detail) {
+        this.mTitle = title;
+        this.mImage = imagePath;
+        this.mDetails = detail;
     }
 
     public int getmId() {

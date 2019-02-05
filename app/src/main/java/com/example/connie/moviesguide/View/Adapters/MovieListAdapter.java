@@ -23,6 +23,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     private Fragment fragment;
     ImageView movieImageView;
     OnClickListener onClickListener;
+    private String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
 
 
 
@@ -44,19 +45,18 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     public void onBindViewHolder(@NonNull MovieViewHolder movieViewHolder, int i) {
         if (movie != null){
             Movie currentMovies = movie.get(i);
-            Glide.with(fragment).load(currentMovies.getmImage()).into(movieImageView);
+            Glide.with(fragment).load(IMAGE_BASE_URL + currentMovies.getmImage()).into(movieImageView);
             String movieTitle = currentMovies.getmTitle();
+
             movieImageView.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View view) {
-
-                }
+                    }
             });
             movieViewHolder.movieTitleTextView.setText(movieTitle);
-
             }
-            movieViewHolder.movieTitleTextView.setText("No movies yet, Turn on your Connection");
-        //this is for the first time the user is using the app with out internet connection
+
 
 
     }
@@ -83,6 +83,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     public void setData(List<Movie> newMovie){
         this.movie = newMovie;
         notifyDataSetChanged();
+    }
+
+    public List<Movie> getData(){
+        return movie;
     }
 
 

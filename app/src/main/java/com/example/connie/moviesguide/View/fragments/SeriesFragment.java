@@ -8,11 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.connie.moviesguide.R;
 import com.example.connie.moviesguide.View.Activities.DetailSeries;
+import com.example.connie.moviesguide.View.Activities.MainActivity;
 import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
 import com.example.connie.moviesguide.model.data.MovieRepository;
@@ -41,20 +44,33 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
     private MovieApiViewModel seriesMovieApiViewModel;
     private MovieListAdapter movieListAdapter;
     private Context context;
-    private MovieApiInterface movieApiInterface;
-    private ApiResponse ApiResponse;
-    private MovieApiClient movieApiClient;
     private ArrayList<Movie> allSeries = new ArrayList<>();
-    private MovieRepository movieRepository;
     private MovieViewModel movieViewModel;
+    ProgressDialog progressDialog;
     MovieListAdapter.OnClickListener onClickListener;
     private boolean isConnected;
-    private String queryText;
-    private MoviesFragment moviesFragment;
+    public static final String TAG = MainActivity.class.getSimpleName();
+
+
 
     public SeriesFragment() {
         // Required empty public constructor
     }
+
+    Observer<List<Movie>> apiObserver = new Observer<List<Movie>>() {
+        @Override
+        public void onChanged(@Nullable List<Movie> movies) {
+            if (movies == null) {
+                getAllSeries();
+            } else {
+                allSeries = (ArrayList<Movie>) movies;
+                movieListAdapter.setData(allSeries);
+
+            }
+        }
+    };
+
+
 
 
     @Override
@@ -67,7 +83,6 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
         movieListAdapter = new MovieListAdapter(context, onClickListener, (List<Movie>) allSeries, this);
         recyclerView.setAdapter(movieListAdapter);
         context = getActivity().getApplicationContext();
-        movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
         seriesMovieApiViewModel = ViewModelProviders.of(this).get(MovieApiViewModel.class);
         seriesMovieApiViewModel.init(this);
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
@@ -80,14 +95,11 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
             public boolean onQueryTextSubmit(String s) {
                 if (!isConnected()) {
                     Toast.makeText(context, "switch on your internet connection", Toast.LENGTH_SHORT).show();
-
-                } else {
+                    } else {
 
                     seriesMovieApiViewModel.getSeriesApiSearch(s);
-
                 }
-
-                return true;
+                    return true;
             }
 
             @Override
@@ -101,29 +113,14 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
 
     }
 
-    public String getQueryText() {
-        return queryText;
-    }
+
 
     public void displayData() {
-        Observer<List<Movie>> apiObserver = new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                if (movies == null) {
-                    getAllSeries();
-                } else {
-                    allSeries = (ArrayList<Movie>) movies;
-                    movieListAdapter.setData(allSeries);
-
-                }
-            }
-        };
         if (!isConnected()) {
             getAllSeries();
         } else {
             seriesMovieApiViewModel.getSeriesApiData().observe(SeriesFragment.this, apiObserver);
-
-        }
+            }
     }
 
 
