@@ -2,11 +2,7 @@ package com.example.connie.moviesguide.model.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
-
-import java.sql.Blob;
-import java.util.Date;
 
 @Entity
 @TypeConverters(DateConverter.class)
@@ -26,9 +22,9 @@ public class Movie {
     }
 
 
-    public Movie(String title, String imagePath, String detail) {
+    public Movie(String title, String image, String detail) {
         this.mTitle = title;
-        this.mImage = imagePath;
+        this.mImage = image;
         this.mDetails = detail;
     }
 

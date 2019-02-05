@@ -1,7 +1,6 @@
 package com.example.connie.moviesguide.View.fragments;
 
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -13,13 +12,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.util.Log;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.example.connie.moviesguide.R;
@@ -27,10 +24,10 @@ import com.example.connie.moviesguide.View.Activities.DetailsMovies;
 import com.example.connie.moviesguide.View.Activities.MainActivity;
 import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
-import com.example.connie.moviesguide.model.service.MovieApiViewModel;
+import com.example.connie.moviesguide.model.service.ApiResponse;
 import com.example.connie.moviesguide.model.service.MovieApiClient;
 import com.example.connie.moviesguide.model.service.MovieApiInterface;
-import com.example.connie.moviesguide.model.service.ApiResponse;
+import com.example.connie.moviesguide.model.service.MovieApiViewModel;
 import com.example.connie.moviesguide.viewmodels.MovieViewModel;
 
 import java.util.ArrayList;
@@ -48,6 +45,7 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
     private MovieApiClient movieApiClient;
     private MovieApiInterface movieApiInterface;
     private ArrayList<Movie> allMovies = new ArrayList<>();
+    private ApiResponse movieRepo;
     Spinner spinner;
     private MovieViewModel movieViewModel;
     private MovieListAdapter movieListAdapter;
@@ -60,13 +58,6 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         // Required empty public constructor
     }
 
-    /**
-     this fragment shows the latest movies and tv shows, but it shows movie by default and there is a spinner that gives you opportunity
-     to choose between tv shows and series
-      **/
-
-
-// the Observer class observes the list of movies the api is returning and adding to the arraylist of all movies from the movieapiviewmodel class
     Observer<List<Movie>> apiObserver = new Observer<List<Movie>>() {
         @Override
         public void onChanged(@Nullable List<Movie> movies) {
@@ -81,7 +72,6 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         }
     };
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,12 +82,18 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
         // i'm setting he adapter somewhere down in the setView method
         layoutManager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(layoutManager);
+        Log.e(TAG, "recycler view set, awaiting data");
+
+
         movieApiInterface = MovieApiClient.getMovieApiClient().create(MovieApiInterface.class);
         movieMovieApiViewModel = ViewModelProviders.of(this).get(MovieApiViewModel.class);
         movieMovieApiViewModel.init(this);
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+
         spinner = view.findViewById(R.id.options_spinner);
+        Log.e(TAG, "wait, while we load the data for you");
         setView();
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
@@ -110,12 +106,9 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
                         Log.e(TAG, "data is empty");
                         movieMovieApiViewModel.getMovieApiData()
                                 .observe(DiscoverFragments.this, apiObserver);
-                        Log.e(TAG , "heyyo");
 
                     }
-                }
-
-                else {
+                } else {
                     adapterView.getItemAtPosition(position);
                     if (!isConnected()) {
                         getAllMovie();
@@ -124,7 +117,9 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
                     } else {
                         Log.e(TAG, "something is right here please");
                         movieMovieApiViewModel.getSeriesApiData().observe(DiscoverFragments.this, apiObserver);
-                        }
+
+
+                    }
 
 
                 }
@@ -143,7 +138,8 @@ public class DiscoverFragments extends Fragment implements MovieListAdapter.OnCl
             }
         });
 
-        return view;}
+        return view;
+    }
 
     @Override
     public void onClick(Movie movie) {
