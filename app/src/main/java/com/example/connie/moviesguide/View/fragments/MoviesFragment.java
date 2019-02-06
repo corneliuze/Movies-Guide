@@ -1,7 +1,6 @@
 package com.example.connie.moviesguide.View.fragments;
 
 
-import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -15,7 +14,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -25,13 +23,8 @@ import com.example.connie.moviesguide.View.Activities.DetailsMovies;
 import com.example.connie.moviesguide.View.Activities.MainActivity;
 import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
-import com.example.connie.moviesguide.model.data.MovieRepository;
 import com.example.connie.moviesguide.model.service.MovieApiViewModel;
-import com.example.connie.moviesguide.model.service.MovieApiClient;
-import com.example.connie.moviesguide.model.service.MovieApiInterface;
-import com.example.connie.moviesguide.model.service.ApiResponse;
 import com.example.connie.moviesguide.viewmodels.MovieViewModel;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +39,18 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private MovieListAdapter movieListAdapter;
-    private List<Movie> allMovies;
+    Observer<List<Movie>> apiObserver = new Observer<List<Movie>>() {
+        @Override
+        public void onChanged(@Nullable List<Movie> movies) {
+            if (movies == null) {
+                getAllMovie();
+            } else {
+//                allMovies = movies;
+                Log.i(TAG, "Observed data size is:" + movies.size());
+                movieListAdapter.setData(movies);
+            }
+        }
+    };
     private MovieViewModel movieViewModel;
     private MovieApiViewModel movieMovieApiViewModel;
 
@@ -55,26 +59,11 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
     public static final String TAG = MainActivity.class.getSimpleName();
 
 
-
     public MoviesFragment() {
         // Required empty public constructor
     }
 
-    Observer<List<Movie>> apiObserver = new Observer<List<Movie>>() {
-        @Override
-        public void onChanged(@Nullable List<Movie> movies) {
-            if (movies == null) {
-                getAllMovie();
-            } else {
-                allMovies =  movies;
-               Log.i(TAG, "Observed data size is:" + movies.size());
-              Log.i(TAG, "Observed data is:" + new Gson().toJson(movies));
-                movieListAdapter.setData(movies);
-                Log.i(TAG , "movies here " + allMovies + "was added");
-            }
-        }
-    };
-
+    private List<Movie> allMovies = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,8 +83,6 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
         displayData();
 
 
-
-
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -103,10 +90,12 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
                     Toast.makeText(context, "Turn On Your Connection", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    Log.i(TAG,"this is what you searched for :" + s);
-                    movieMovieApiViewModel.getMovieApiData().observe(MoviesFragment.this, apiObserver);
+                    Log.i(TAG, "this is what you searched for :" + s);
+                    movieMovieApiViewModel.getMovieApiSearch(s).observe(MoviesFragment.this, apiObserver);
+
                     Log.i(TAG, "htgwm" + allMovies);
-                    setView();
+
+//                    setView();
                     //movieMovieApiViewModel.getMovieApiSearch(s);
 
                 }
@@ -129,7 +118,6 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
             getAllMovie();
         } else {
             movieMovieApiViewModel.getMovieApiData().observe(MoviesFragment.this, apiObserver);
-            Log.e(TAG , "e reach here");
             setView();
         }
 
@@ -139,15 +127,13 @@ public class MoviesFragment extends Fragment implements MovieListAdapter.OnClick
         movieViewModel.getAllMovie().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
-                Log.i(TAG , "The following movies" + movies + "got here");
                 movieListAdapter.setData(movies);
             }
         });
     }
 
     public void setView() {
-        movieListAdapter = new MovieListAdapter(context, onClickListener, allMovies , this);
-        Log.i(TAG , "The following movies" + allMovies + "needs to show"); //kodebii
+        movieListAdapter = new MovieListAdapter(context, onClickListener, allMovies, this);
         recyclerView.setAdapter(movieListAdapter);
     }
 

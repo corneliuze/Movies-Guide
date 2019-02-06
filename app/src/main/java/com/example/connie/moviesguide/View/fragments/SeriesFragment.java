@@ -8,13 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +23,7 @@ import com.example.connie.moviesguide.View.Activities.DetailSeries;
 import com.example.connie.moviesguide.View.Activities.MainActivity;
 import com.example.connie.moviesguide.View.Adapters.MovieListAdapter;
 import com.example.connie.moviesguide.model.data.Movie;
-import com.example.connie.moviesguide.model.data.MovieRepository;
 import com.example.connie.moviesguide.model.service.MovieApiViewModel;
-import com.example.connie.moviesguide.model.service.MovieApiClient;
-import com.example.connie.moviesguide.model.service.MovieApiInterface;
-import com.example.connie.moviesguide.model.service.ApiResponse;
 import com.example.connie.moviesguide.viewmodels.MovieViewModel;
 
 import java.util.ArrayList;
@@ -97,7 +91,7 @@ public class SeriesFragment extends Fragment implements MovieListAdapter.OnClick
                     Toast.makeText(context, "switch on your internet connection", Toast.LENGTH_SHORT).show();
                     } else {
 
-                    seriesMovieApiViewModel.getSeriesApiSearch(s);
+                    seriesMovieApiViewModel.getSeriesApiSearch(s).observe(SeriesFragment.this, apiObserver);
                 }
                     return true;
             }

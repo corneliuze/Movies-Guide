@@ -27,14 +27,28 @@ public class MovieApiViewModel extends ViewModel {
     final MutableLiveData<List<Movie>> results = new MutableLiveData<>();
 
 
-    public void init(Fragment fragment){
-        movieViewModel= ViewModelProviders.of(fragment).get(MovieViewModel.class);
-        // initializing the viewmodel for the database
-        Retrofit retrofit = MovieApiClient.getMovieApiClient();
-        //getting the instance of retrofit
-        movieApiInterface = retrofit.create(MovieApiInterface.class);
-        //intializing the interface
-    }
+    private Callback<ApiResponse> searchResponseCallback = new Callback<ApiResponse>() {
+        @Override
+        public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+            List<Result> allResults = response.body().getResults();
+//            Log.i("APIViewModel", "data received is: " + new Gson().toJson(allResults));
+            List<Movie> allMovies = new ArrayList<>();
+            for (Result result : allResults) {
+                String title = result.getTitle();
+                String imagePath = result.getPosterPath();
+                String detail = result.getOverview();
+
+                Movie movie = new Movie(title, imagePath, detail);
+                allMovies.add(movie);
+            }
+            results.postValue(allMovies);
+        }
+
+        @Override
+        public void onFailure(Call<ApiResponse> call, Throwable t) {
+            results.postValue(null);
+        }
+    };
 
 
     private Callback<ApiResponse> apiResponseCallback = new Callback<ApiResponse>() {
@@ -62,27 +76,37 @@ public class MovieApiViewModel extends ViewModel {
         }
     };
 
+    public void init(Fragment fragment) {
+        movieViewModel = ViewModelProviders.of(fragment).get(MovieViewModel.class);
+        // initializing the viewmodel for the database
+        Retrofit retrofit = MovieApiClient.getMovieApiClient();
+        //getting the instance of retrofit
+        movieApiInterface = retrofit.create(MovieApiInterface.class);
+        //intializing the interface
+    }
+
     public LiveData<List<Movie>> getMovieApiData() {
         Call<ApiResponse> call = movieApiInterface.getMovieDiscover();
         call.enqueue(apiResponseCallback);
         return results;
     }
 
-    public LiveData<List<Movie>> getSeriesApiData(){
+    public LiveData<List<Movie>> getSeriesApiData() {
         Call<ApiResponse> call = movieApiInterface.getSeriesDiscover();
         call.enqueue(apiResponseCallback);
         return results;
     }
 
-    public LiveData<List<Movie>> getSeriesApiSearch(String queryText){
+    public LiveData<List<Movie>> getSeriesApiSearch(String queryText) {
         Call<ApiResponse> call = movieApiInterface.searchTv(queryText);
-        call.enqueue(apiResponseCallback);
+        call.enqueue(searchResponseCallback);
         return results;
     }
-    public LiveData<List<Movie>> getMovieApiSearch(String queryText){
+
+    public LiveData<List<Movie>> getMovieApiSearch(String queryText) {
         Call<ApiResponse> call = movieApiInterface.searchMovies(queryText);
-        call.enqueue(apiResponseCallback);
-        return  results;
+        call.enqueue(searchResponseCallback);
+        return results;
 
     }
 
